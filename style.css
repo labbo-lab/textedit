@@ -1,0 +1,136 @@
+html {
+  scroll-behavior: smooth;
+}
+
+.title {
+  z-index: -1;
+  font-size: 15px;
+  /*   color: black; */
+  opacity: 0.75;
+  background: white;
+  width: max-content;
+  /*   height: fit-content; */
+  padding: 10px;
+  /*   margin-top: 15px; */
+  line-height: 0px;
+  position: fixed;
+  /*   bottom: 10px; */
+  right: 0;
+}
+
+.warningText {
+  color: red;
+}
+
+textarea {
+  font-size: 80%;
+  max-width: calc(100vw - 20px);
+  font-family: initial;
+  width: 100%;
+  height: 70vh;
+  z-index: 200;
+  min-width: 1ch;
+  min-height: calc(2ex);
+  resize: both;
+}
+
+dialog {
+  position: fixed;
+  width: 60vw;
+  height: 40vh;
+  top: 20vh;
+}
+
+#fileNameInput {
+  margin-bottom: 5px;
+  font-family: monospace;
+  width: 200px;
+}
+
+.fileButtons > button {
+  width: 11ch;
+}
+
+#overlay {
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /*   opacity: .5; */
+}
+
+.centerOverlay {
+  translate: 0 calc(50vh - 1em);
+  color: white;
+  font-size: 10vw;
+  font-family: monospace;
+  /*   font-weight: bold; */
+  display: flex;
+  justify-content: center;
+  align-self: center;
+}
+
+.fontSizeText {
+  font-family: monospace;
+  margin-left: 3px; 
+}
+
+.fontSizeDiv > button {
+  width: 40px;
+  height: 30px;
+  /*   width: 100px; */
+  font-family: monospace;
+  margin-top: 3px;
+  /*   border-left: none; */
+}
+
+#textArea {
+  padding-left: 10px;
+  padding-top: 7px;
+  border-radius: 5px 5px 1px 5px;
+  height: 400px;
+  width: auto;
+  border: 1px solid black;
+  overflow: scroll;
+  resize: both;
+}
+.decDiv>* {
+  margin-top: 10px;
+  width: 40px;
+  height: 40px;
+}
+
+#downloadOptions {
+  height: 20px;
+}
+
+.checkbox {
+  top: auto;
+  width: 40px;
+  height: 40px;
+  background: #eee;
+  outline: gray 1px solid;
+  border-radius: 1px;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.check {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  opacity: 0;
+  position: fixed;
+}
+
+.checkbox:has(.check:checked) {
+  background: darkgray;
+  color: black;
+}
+
+.decIcon {
+  margin-top: 25%;
+  font-size: 20px;
+}
