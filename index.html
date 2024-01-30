@@ -1,1 +1,57 @@
-<textarea id="textarea"></textarea>
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>LunaEdit | Online</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <div><input id="fileNameInput" placeholder="File Name"></input>
+    <div>
+      <div contenteditable id="textArea" placeholder="Start typing, upload a file, or drag and drop a file!"></div>
+      <div class="title">LunaEdit <i>v2.2</i></div>
+    </div>
+    <div class="fileButtons">
+      <button title="Warning! Large files (~1MB+) may cause lag!" type="button" id="upload"
+        onclick="document.getElementById('file').click();">Upload</button>
+      <button id="download">Download</button>
+      <input tabindex="-1" type="file" style="display:none;" id="file" name="upload" />
+      <select name="downloadOptions" id="downloadOptions">
+        <option value="0">
+          Save as plain-text
+        </option>
+        <option value="0">
+          Save as formatted text
+        </option>
+      </select>
+    </div>
+    <div class="fontSizeDiv">
+      <button id="minusFont">-</button>
+      <button id="plusFont">+</button>
+      <span class="fontSizeText">Font-size</span>
+    </div>
+    <div class="decDiv">
+      <div class="checkbox">
+        <input class="check" type="checkbox" id="bold"><b class="decIcon">B</b>
+      </div>
+      <div class="checkbox">
+        <input class="check" type="checkbox" id="italic"><i class="decIcon">I</i>
+      </div>
+      <div class="checkbox">
+        <input class="check" type="checkbox" id="underline"><u class="decIcon">U</u>
+      </div>
+      <div class="checkbox">
+        <input class="check" type="checkbox" id="strikethrough"><s class="decIcon">S</s>
+      </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
+  <script src="service-worker.js"></script>
+</body>
+
+</html>
