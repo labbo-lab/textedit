@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>LunaEdit | Offline</title>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+html {
+scroll-behavior: smooth;
+}
+
+.title {
+z-index: -1;
+font-size: 15px;
+/* color: black; */
+opacity: 0.75;
+background: white;
+width: max-content;
+/* height: fit-content; */
+padding: 10px;
+/* margin-top: 15px; */
+line-height: 0px;
+position: fixed;
+/* bottom: 10px; */
+right: 0;
+}
+
+.warningText {
+color: red;
+}
+
+textarea {
+font-size: 80%;
+max-width: calc(100vw - 20px);
+font-family: initial;
+width: 100%;
+height: 70vh;
+z-index: 200;
+min-width: 1ch;
+min-height: calc(2ex);
+}
+
+dialog {
+position: fixed;
+width: 60vw;
+height: 40vh;
+top: 20vh;
+}
+
+#fileNameInput {
+margin-bottom: 5px;
+font-family: monospace;
+width: 200px;
+}
+
+.fileButtons > button {
+width: 11ch;
+}
+
+#overlay {
+background: rgba(0, 0, 0, 0.5);
+position: absolute;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+/* opacity: .5; */
+}
+
+.centerOverlay {
+translate: 0 calc(50vh - 1em);
+color: white;
+font-size: 10vw;
+font-family: monospace;
+/* font-weight: bold; */
+display: flex;
+justify-content: center;
+align-self: center;
+}
+
+.fontSizeText {
+font-family: monospace;
+margin-left: 3px;
+}
+
+.fontSizeDiv > button {
+width: 40px;
+height: 30px;
+/* width: 100px; */
+font-family: monospace;
+margin-top: 3px;
+/* border-left: none; */
+}
+
+#textArea {
+padding-left: 10px;
+padding-top: 7px;
+border-radius: 5px 5px 1px 5px;
+height: 400px;
+width: auto;
+border: 1px solid black;
+overflow: scroll;
+resize: both;
+}
+.decDiv>* {
+margin-top: 10px;
+width: 40px;
+height: 40px;
+}
+
+#downloadOptions {
+height: 20px;
+}
+
+.checkbox {
+top: auto;
+width: 40px;
+height: 40px;
+background: #eee;
+outline: gray 1px solid;
+border-radius: 1px;
+display: inline-flex;
+justify-content: center;
+}
+
+.check {
+width: 40px;
+height: 40px;
+margin: 0;
+opacity: 0;
+position: fixed;
+}
+
+.checkbox:has(.check:checked) {
+background: darkgray;
+color: black;
+}
+
+.decIcon {
+margin-top: 25%;
+font-size: 20px;
+}
+</style>
+</head>
+<body>
+<div><input id="fileNameInput" placeholder="File Name"></input>
+<div>
+<div contenteditable id="textArea" placeholder="Start typing, upload a file, or drag and drop a file!"></div>
+<div class="title">LunaEdit <i>v2.2</i></div>
+</div>
+<div class="fileButtons">
+<button title="Warning! Large files (~1MB+) may cause lag!" type="button" id="upload"onclick="document.getElementById('file').click();">Upload</button>
+<button id="download">Download</button>
+<input tabindex="-1" type="file" style="display:none;" id="file" name="upload" />
+<select name="downloadOptions" id="downloadOptions">
+<option value="0">
+Save as plain-text
+</option>
+<option value="0">
+Save as formatted text
+</option>
+</select>
+</div>
+<div class="fontSizeDiv">
+<button id="minusFont">-</button>
+<button id="plusFont">+</button>
+<span class="fontSizeText">Font-size</span>
+</div>
+<div class="decDiv">
+<div class="checkbox">
+<input class="check" type="checkbox" id="bold"><b class="decIcon">B</b>
+</div>
+<div class="checkbox">
+<input class="check" type="checkbox" id="italic"><i class="decIcon">I</i>
+</div>
+<div class="checkbox">
+<input class="check" type="checkbox" id="underline"><u class="decIcon">U</u>
+</div>
+<div class="checkbox">
+<input class="check" type="checkbox" id="strikethrough"><s class="decIcon">S</s>
+</div>
+</div>
+
+
+<script>
+const upload = document.getElementById("file");
+const download = document.getElementById("download")
+const textArea = document.getElementById("textArea")
+const fileNameInput = document.getElementById("fileNameInput")
+const overlay = document.getElementById("overlay")
+const fontPlus = document.getElementById("plusFont")
+const fontMinus = document.getElementById("minusFont")
+const downloadOpts = document.getElementById("downloadOptions")
+upload.addEventListener("change", handleFiles, false);
+var fileName = ""
+var fontSize = 80
+// var shiftKey = false
+
+bold = document.getElementById("bold")
+italic = document.getElementById("italic")
+underline = document.getElementById("underline")
+strikethrough = document.getElementById("strikethrough")
+
+document.addEventListener("keydown", handleKeyDown)
+
+fontPlus.addEventListener("click", fontSizeUp)
+fontMinus.addEventListener("click", fontSizeDown)
+
+function fontSizeUp() {
+fontSize+=10
+textArea.style.fontSize = `${fontSize}%`
+}
+
+function fontSizeDown() {
+fontSize-=10
+textArea.style.fontSize = `${fontSize}%`
+}
+
+function handleKeyDown(e) {
+if (document.activeElement != textArea
+&&
+document.activeElement != fileNameInput
+&& !e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey && e.key != " " && !e.key.includes("Arrow") && !e.key.includes("Tab")
+) {
+textArea.focus()
+}
+if (e.shiftKey) {
+shiftKey = true
+}
+if (e.ctrlKey) {
+switch (e.key) {
+case "b":
+e.preventDefault()
+bold.click()
+return
+case "i":
+e.preventDefault()
+italic.click()
+return
+case "u":
+e.preventDefault()
+underline.click()
+return
+}
+}
+}
+
+
+
+async function handleFiles() {
+fileList = await this.files;
+printFile(await fileList[0])
+}
+
+async function printFile(file) {
+const reader = new FileReader();
+reader.onload = (evt) => {
+textArea.innerText = evt.target.result
+textArea.scroll(0,0)
+};
+reader.readAsText(await file);
+fileNameInput.value = file.name
+}
+
+function save(filename, text, type) {
+var element = document.createElement('a');
+element.setAttribute('href', `data:text/${type};charset=utf-8,` + encodeURIComponent(text));
+element.setAttribute('download', filename);
+
+element.style.display = 'none';
+document.documentElement.appendChild(element);
+element.click();
+document.documentElement.removeChild(element);
+}
+
+
+download.addEventListener("click", function () {
+fileName = fileNameInput.value
+// fileExt = fileName.substring(fileName.lastIndexOf(".") + 1);
+// console.log(fileExt)
+if (downloadOpts.value == "0") {
+text = textArea.innerText
+ext = "txt"
+type = "plain"
+} else {
+text = textArea.innerHTML
+ext = "html"
+type = "html"
+}
+if (fileName == "") {
+save(`textEdit.${ext}`, text, type)
+} else {
+save(fileNameInput.value, text, type)
+}
+}, false)
+
+fileNameInput.addEventListener("input", fileNameInputSizeCalc)
+window.addEventListener("resize", fileNameInputSizeCalc)
+
+function fileNameInputSizeCalc() {
+fileNameInput.style.width = `min(max(calc(${fileNameInput.value.length}ch + 1ch), 200px), 100%)`
+}
+
+/* ---- DROP CODE ---- */
+
+const drop = document.getElementById("upload")
+
+document.addEventListener("drop", handleDrop)
+document.addEventListener("dragover", handleDragOver)
+document.addEventListener("dragend", handleDragEnd)
+
+function handleDragEnd(e) {
+e.preventDefault();
+textArea.style.background = "initial"
+}
+
+function handleDragOver(e) {
+e.preventDefault();
+// overlay.showPopover()
+}
+
+async function handleDrop(e) {
+e.preventDefault()
+if (textArea.innerText) {
+if (confirm("Do you want to overwrite the current content?")) {
+data = e.dataTransfer.items[0].getAsFile()
+textArea.innerText = await data.text()
+fileNameInput.value = data.name
+fileNameInput.style.width = `min(max(calc(${fileNameInput.value.length}ch + 1ch), 200px), 100%)`
+}
+} else {
+data = e.dataTransfer.items[0].getAsFile()
+textArea.value = await data.text()
+fileNameInput.value = await data.name
+}
+}
+
+/* ---- LOCAL SAVE CODE ---- */
+
+/*
+const lSave = document.getElementById('lSave')
+const lCLear = document.getElementById('lClear')
+lSaveIndex = 0
+
+lSave.addEventListener("click", handleLSaveClick)
+lClear.addEventListener("click", handleLClearClick)
+
+function handleLSaveClick(e) {
+}
+
+function handleLClearClick(e) {
+localStorage.clear()
+} */
+
+function log(t = "") {
+document.body.append(t,document.createElement("br"))
+}
+
+// alert("test")
+
+function checkPlain() {
+alert(textArea.innerText)
+}
+
+function checkFormat() {
+alert(textArea.innerHTML)
+}
+
+bold.onclick = (e) => {
+textArea.focus()
+document.execCommand("bold")
+}
+italic.onclick = (e) => {
+textArea.focus()
+document.execCommand("italic")
+}
+
+underline.onclick = (e) => {
+textArea.focus()
+document.execCommand("underline")
+}
+
+strikethrough.onclick = (e) => {
+textArea.focus()
+document.execCommand("strikethrough")
+}
+
+onerror = (e) => {
+alert(e)
+}
+//# sourceURL=userscript.js
+</script>
+</body>
+</html>
