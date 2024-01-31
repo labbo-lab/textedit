@@ -1,2 +1,2 @@
 # textedit
-A web based text editor
+A web based minimal text editor
